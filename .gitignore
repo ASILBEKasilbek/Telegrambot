@@ -73,3 +73,7 @@ dist/
 *.egg-info/
 *.egg
 bot.db
+
+
+
+__pycache__
