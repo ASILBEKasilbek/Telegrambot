@@ -14,7 +14,7 @@ from database import (
 )
 from utils import (
     download_social_media_video, process_youtube_video, shazam_video, shazam_audio,
-    check_membership, download_mp3_from_youtube
+    check_membership, download_mp3_from_youtube, process_tiktok_video, process_twitter_video, process_facebook_video
 )
 
 # Logging sozlamalari
@@ -96,19 +96,48 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text("Video hajmi katta!", reply_markup=InlineKeyboardMarkup(keyboard))
             else:
                 await update.message.reply_text("YouTube videosida xatolik!")
+        
         elif "instagram.com" in url:
             result = download_social_media_video(url)
-            if result:
-                await update.message.reply_video(result)
+            if isinstance(result, str) and result.startswith("downloads/") and os.path.exists(result):
+                await send_file(update, result, update.message.reply_video)
+                os.remove(result)
+            elif isinstance(result, str) and result.startswith("http"):
+                short_url = shorten_url(result)
+                keyboard = [[InlineKeyboardButton("Yuklab olish", url=short_url)]]
+                await update.message.reply_text("Video hajmi katta!", reply_markup=InlineKeyboardMarkup(keyboard))
             else:
                 await update.message.reply_text("Instagram videosida xatolik!")
+        
+        elif "tiktok.com" in url or "vt.tiktok.com" in url:
+            result = download_social_media_video(url)
+            if isinstance(result, str) and result.startswith("downloads/") and os.path.exists(result):
+                await send_file(update, result, update.message.reply_video)
+                os.remove(result)
+            elif isinstance(result, str) and result.startswith("http"):
+                short_url = shorten_url(result)
+                keyboard = [[InlineKeyboardButton("Yuklab olish", url=short_url)]]
+                await update.message.reply_text("Video hajmi katta!", reply_markup=InlineKeyboardMarkup(keyboard))
+            else:
+                await update.message.reply_text("TikTok videosida xatolik! FAST_SAVER_API bilan muammo bo‘lishi mumkin.")
+        
+        elif "twitter.com" in url or "x.com" in url:
+            result = process_twitter_video(url)
+            if isinstance(result, str) and result.startswith("downloads/") and os.path.exists(result):
+                await send_file(update, result, update.message.reply_video)
+                os.remove(result)
+            elif isinstance(result, str) and result.startswith("http"):
+                short_url = shorten_url(result)
+                keyboard = [[InlineKeyboardButton("Yuklab olish", url=short_url)]]
+                await update.message.reply_text("Video hajmi katta!", reply_markup=InlineKeyboardMarkup(keyboard))
+            else:
+                await update.message.reply_text("Twitter videosida xatolik!")
+        
         else:
-            await update.message.reply_text("Faqat YouTube yoki Instagram URL’lari qo‘llab-quvvatlanadi!")
+            await update.message.reply_text("Qo‘llab-quvvatlanmaydigan platforma! Hozirda YouTube, Instagram, TikTok va Twitter qo‘llab-quvvatlanadi.")
     except Exception as e:
         logger.error(f"URL handling error: {e}")
         await update.message.reply_text(f"Xatolik: {str(e)}")
-
-# Video handler
 async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if not await check_membership(context.bot, user_id):
