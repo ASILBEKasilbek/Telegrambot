@@ -10,3 +10,66 @@ venv
 admin.py
 bot.py
 
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+*.env
+*.venv
+Pipfile
+Pipfile.lock
+
+# Django stuff
+db.sqlite3
+*.sqlite3
+/media/
+staticfiles/
+static/
+logs/
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+
+# Local settings
+local_settings.py
+
+# Secret key
+.env
+*.pem
+
+# VSCode settings
+.vscode/
+.history/
+
+# PyCharm settings
+.idea/
+
+# macOS & Linux
+.DS_Store
+*.swp
+*.swo
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Testing / Coverage reports
+.coverage
+htmlcov/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+bot.db
