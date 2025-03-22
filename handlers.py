@@ -56,9 +56,22 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=reply_markup
         )
         return
-    await update.message.reply_text("Salom! Botdan foydalanish uchun:\n- YouTube yoki boshqa video URL yuboring.\n- Video yoki audio fayl yuklang.\nAdminlar uchun: /admin")
+    await update.message.reply_text("""Assalomu alaykum! 👋
+Men ijtimoiy tarmoqlardan video yuklab beruvchi botman. 🎥📥
+
+💡 Mening imkoniyatlarim:
+📌 YouTube, Instagram, TikTok, Facebook va boshqa tarmoqlardan videolar yuklash – faqat URL yuboring!
+🎵 Videodan musiqa chiqarib berish – menga video jo‘nating, men esa undagi musiqani MP3 formatida chiqarib beraman!
+📺 YouTube Shorts va oddiy videolarni yuklash – YouTube havolasini yuboring!
+
+🔹 Qanday foydalanish mumkin?
+1️⃣ Video yuklash uchun unga havolani yuboring.
+2️⃣ Videodan musiqa olish uchun menga videoni yuboring.
+
+🔥 Boshlash uchun hozir URL yuboring yoki videongizni jo‘nating!""")
 
 # Tekshirish tugmasi uchun callback
+
 async def check_membership_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     user_id = query.from_user.id
@@ -138,6 +151,7 @@ async def handle_url(update: Update, context: ContextTypes.DEFAULT_TYPE):
     except Exception as e:
         logger.error(f"URL handling error: {e}")
         await update.message.reply_text(f"Xatolik: {str(e)}")
+
 async def handle_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if not await check_membership(context.bot, user_id):
